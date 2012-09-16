@@ -58,7 +58,7 @@ class latteServer(http.server.CGIHTTPRequestHandler):
             self.path=self.urlMap[url]
             moduleName=self.path.split('.')[0]
             print("moduleName : "+moduleName)
-            urlTest_pyl=moduleName+'_pyl'
+            url_pyl=moduleName+'_pyl'
             
             #Checking a cookie value to know whether session exists or not.
             print("Cookie : "+headerInfo.getHeaderInfo()["Cookie"])
@@ -92,7 +92,8 @@ class latteServer(http.server.CGIHTTPRequestHandler):
             sessionDic = sessionutil.sessionDataTodict(sessionutil,sessionData)
             
             #print(urlTest_pyl)
-            pyl = __import__(urlTest_pyl)
+            folders = ['./topy']
+            pyl = __import__(url_pyl,fromlist = [folders])
             print("Got started to process dynamic Page")
             module=getattr(pyl, moduleName)(param.getParam(),self.pyFile,sessionDic,headerInfo.getHeaderInfo(),self.databaseInfo)
             #print("processing DynamicPage End")
@@ -102,9 +103,6 @@ class latteServer(http.server.CGIHTTPRequestHandler):
             sessionData = sessionutil.dictToSessionData(sessionutil,finalSessionDic)
             
             sessionutil.setSessionData(sessionutil,sessionKey, sessionData)
-            ##wf = open("temp.html","w")
-            ##wf.write(htmlcode)
-            ##wf.close()
             self.dynamicHtml = htmlcode;
             self.isPyl=True
 
@@ -169,11 +167,10 @@ class latteServer(http.server.CGIHTTPRequestHandler):
             self.path=self.urlMap[url]
             moduleName=self.path.split('.')[0]
             print("moduleName : "+moduleName)
-            urlTest_pyl=moduleName+'_pyl'
+            url_pyl=moduleName+'_pyl'
             
             
-            #print(urlTest_pyl)
-            pyl = __import__(urlTest_pyl)#import py files which is generated from pyl files.
+            pyl = __import__(url_pyl)#import py files which is generated from pyl files.
             
             #Checking a cookie value to know whether session exists or not.
             print("Cookie:"+headerInfo.getHeaderInfo()["Cookie"])
@@ -212,14 +209,10 @@ class latteServer(http.server.CGIHTTPRequestHandler):
             #세션유지시킬 값도 가져와야됨.
             
             htmlcode = module.getHtml()
-            #print(htmlcode)
             finalSessionDic=module.getSession()
             sessionData = sessionutil.dictToSessionData(sessionutil,finalSessionDic)
             
             sessionutil.setSessionData(sessionutil,sessionKey, sessionData)
-            ##wf = open("temp.html","w")
-            ##wf.write(htmlcode)
-            ##wf.close()
             self.dynamicHtml = htmlcode;
             self.isPyl=True
 
